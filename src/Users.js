@@ -1,0 +1,35 @@
+import React, { useState } from "react";
+import User from "./User";
+import { getUsers, useUsersDispatch, useUsersState } from "./UsersContext";
+
+function Users() {
+    const [userId, setUserId] = useState(null);
+    const state = useUsersState();
+    const dispatch = useUsersDispatch();
+
+    const { loading, data: users, error } = state.users;
+
+    const fetchData = () => {
+        getUsers(dispatch);
+    }
+
+    if (loading) return <div>로-딩구 로-딩구</div>;
+    if (error) return <div>으따 에러가 발생했당께요</div>;
+    if (!users) return <button onClick={fetchData}>불러오랑께!!</button>;
+
+    return (
+        <>
+            <ul>
+                {users.map((user) => (
+                    <li key={user.id} onClick={() => setUserId(user.id)}>
+                        {user.username} ({user.name})
+                    </li>
+                ))}
+            </ul>
+            <button onClick={fetchData}>다시 불러온당께</button>
+            {userId && <User id={userId} />}
+        </>
+    );
+}
+
+export default Users;
